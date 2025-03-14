@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +23,11 @@ jobs:
         cd backend
         npm install
         
+    - name: Build Backend
+      run: |
+        cd backend
+        npm run build
+        
     - name: Install Frontend Dependencies
       run: |
         cd frontend
@@ -33,7 +38,11 @@ jobs:
         cd frontend
         npm run build
         
-    - name: Run Tests
+    - name: Run Backend Tests
       run: |
         cd backend
-        npm test 
+        npm test
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }} 
